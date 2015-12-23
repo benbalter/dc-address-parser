@@ -16,7 +16,7 @@ module DcAddressParser
 
     def initialize(address_or_hash)
       if address_or_hash.class == Hash
-        address_or_hash = PARTS.clone.map { |part| address_or_hash[part] }.join(" ")
+        address_or_hash = PARTS.clone.map { |part| address_or_hash[part] }.compact.join(" ")
       end
       @raw_address = @address = address_or_hash
 
