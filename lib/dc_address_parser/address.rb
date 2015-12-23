@@ -4,33 +4,11 @@ module DcAddressParser
 
     attr_reader :raw_address
 
-    CITY = "WASHINGTON, DC"
-    STREET_TYPES = {
-      "STREET"    => "ST",
-      "AVENUE"    => "AVE",
-      "BOULEVARD" => "BLVD",
-      "ROAD"      => "RD",
-      "PLACE"     => "PL",
-      "DRIVE"     => "DR",
-      "CIRCLE"    => "CIR",
-      "PALZA"     => "PLZ",
-      "COURT"     => "CT",
-      "ALLEY"     => "AL",
-      "TERRACE"   => "TER"
-    }
-
-    DIRECTIONS = {
-      "NORTH" => "N",
-      "SOUTH" => "S",
-      "EAST"  => "E",
-      "WEST"  => "W"
-    }
-
     NUMBER_REGEX          = /\A(\d+)[A-Z]*/
     NUMBER_SUFFIX_REGEX   = /(\d+\/\d+|rear)/i
     STREET_NAME_REGEX     = /([A-Z0-9' ]+)/
-    STREET_TYPE_REGEX     = /\b(#{Regexp.union(STREET_TYPES.keys)})\b/
-    STREET_TYPE_ABV_REGEX = /\b(#{Regexp.union(STREET_TYPES.values)})\b/
+    STREET_TYPE_REGEX     = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.keys)})\b/
+    STREET_TYPE_ABV_REGEX = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.values)})\b/
     QUADRANT_REGEX        = /([NS][EW])/
 
     REQUIRED_PARTS = [:number, :street_name, :street_type, :quadrant]
@@ -98,7 +76,7 @@ module DcAddressParser
         street_type: street_type,
         quadrant: quadrant,
         unit_number: unit_number,
-        city: CITY
+        city: DcAddressParser::CITY
       }
     end
 
@@ -151,7 +129,7 @@ module DcAddressParser
     end
 
     def normalize_street_type
-      @address.gsub!(STREET_TYPE_ABV_REGEX, STREET_TYPES.invert)
+      @address.gsub!(STREET_TYPE_ABV_REGEX, DcAddressParser::STREET_TYPES.invert)
     end
 
     def normalize_rear
@@ -171,8 +149,8 @@ module DcAddressParser
     end
 
     def normalize_directions
-      regex = /\b(#{Regexp.union DIRECTIONS.values})(?=\s+|\.)/
-      @address.gsub!(regex, DIRECTIONS.invert)
+      regex = /\b(#{Regexp.union DcAddressParser::DIRECTIONS.values})(?=\s+|\.)/
+      @address.gsub!(regex, DcAddressParser::DIRECTIONS.invert)
     end
 
     def normalize_mt
