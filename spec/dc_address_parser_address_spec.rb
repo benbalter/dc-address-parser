@@ -154,14 +154,25 @@ describe DcAddressParser::Address do
       test_address "123 M.L. King JR. ST NW", "123 MARTIN LUTHER KING JR STREET NW"
     end
 
-    it "normalizes directions" do
-      test_normalizer :normalize_directions, "123 N CAPITAL ST NW",  "123 NORTH CAPITAL ST NW"
-      test_address "123 N CAPITAL ST NW", "123 NORTH CAPITAL STREET NW"
+    describe "directions" do
+      it "normalizes directions" do
+        test_address "123 N CAPITAL ST NW", "123 NORTH CAPITAL STREET NW"
+        test_address "123 N. CAPITAL ST NW", "123 NORTH CAPITAL STREET NW"
+      end
+
+      it "doesn't mangle N, S, E, or W street" do
+        test_address "123 N ST NW", "123 N STREET NW"
+      end
     end
 
     it "normalizes mt" do
       test_normalizer :normalize_mt, "123 MT PLEASANT ST NW",  "123 MOUNT PLEASANT ST NW"
       test_address "123 MT PLEASANT ST NW", "123 MOUNT PLEASANT STREET NW"
+    end
+
+    it "strips punctuation" do
+      test_normalizer :strip_punctuation, "123 N. BEN's ALLEY N.W.",  "123 N BEN's ALLEY NW"
+      test_address "123 N. BEN's ALLEY N.W.", "123 NORTH BEN'S ALLEY NW"
     end
   end
 

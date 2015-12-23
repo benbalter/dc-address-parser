@@ -9,6 +9,7 @@ module DcAddressParser
     STREET_NAME_REGEX     = /([A-Z0-9' ]+)/
     STREET_TYPE_REGEX     = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.keys)})\b/
     STREET_TYPE_ABV_REGEX = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.values)})\b/
+    DIRECTION_REGEX       = /\A(#{Regexp.union DcAddressParser::DIRECTIONS.values})(?=#{STREET_NAME_REGEX}+\z)/
     QUADRANT_REGEX        = /([NS][EW])/
 
     PARTS = [:number, :number_suffix, :street_name, :street_type, :quadrant, :unit_number]
@@ -43,6 +44,11 @@ module DcAddressParser
 
         if street_name =~ /\A[0-9]+\z/
           street_name = ActiveSupport::Inflector.ordinalize(street_name).upcase
+        end
+
+        regex = DIRECTION_REGEX
+        if street_name =~ regex
+          street_name.gsub!(DIRECTION_REGEX, DcAddressParser::DIRECTIONS.invert)
         end
 
         street_name
@@ -108,9 +114,9 @@ module DcAddressParser
       normalize_rear
       normalize_space
       normalize_mlk
-      normalize_directions
       normalize_mt
       split
+      strip_punctuation
     end
 
     def normalize_whitespace
@@ -151,11 +157,6 @@ module DcAddressParser
       @address.gsub!(/\bJR\./, "JR")
     end
 
-    def normalize_directions
-      regex = /\b(#{Regexp.union DcAddressParser::DIRECTIONS.values})(?=\s+|\.)/
-      @address.gsub!(regex, DcAddressParser::DIRECTIONS.invert)
-    end
-
     def normalize_mt
       @address.gsub!(/\bMT\b/, "MOUNT")
     end
@@ -164,6 +165,10 @@ module DcAddressParser
       @address = @address.split(";").reject { |s| s.empty? }.first.to_s
       @address = @address.split(/\bAND\b/).first.to_s.strip
       @address = @address.split(/\b([NS][EW]),/)[0..1].join
+    end
+
+    def strip_punctuation
+      @address.gsub!(/[^#{STREET_NAME_REGEX}\/]/i, "")
     end
 
     def match(regex, number=nil)
