@@ -46,10 +46,8 @@ module DcAddressParser
           street_name = ActiveSupport::Inflector.ordinalize(street_name).upcase
         end
 
-        regex = DIRECTION_REGEX
-        if street_name =~ regex
-          street_name.gsub!(DIRECTION_REGEX, DcAddressParser::DIRECTIONS.invert)
-        end
+        street_name.gsub!(DIRECTION_REGEX, DcAddressParser::DIRECTIONS.invert)
+        street_name.gsub!(/\s#{STREET_TYPE_REGEX}\z/, "")
 
         street_name
       end
@@ -92,7 +90,7 @@ module DcAddressParser
       else
         parts.delete(:city)
       end
-      parts.values.compact.join(" ")
+      parts.values.compact.join(" ").squeeze(" ")
     end
 
     def lookup

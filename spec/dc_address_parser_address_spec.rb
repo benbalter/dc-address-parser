@@ -233,4 +233,8 @@ describe DcAddressParser::Address do
     address = DcAddressParser::Address.new(hash)
     expect(address.to_s).to eql("123 MAIN STREET NW")
   end
+
+  it "removes double street types" do
+    test_address "123 CADY'S ALLEY AL NW", "123 CADY'S ALLEY NW"
+  end
 end
