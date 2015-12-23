@@ -129,7 +129,7 @@ module DcAddressParser
     end
 
     def normalize_ranges
-      @address.gsub!(/\A(\d+)\s?(-|–|&)\s?\d+/, '\1')
+      @address.gsub!(/\A(\d+)\s?(-|–|‐|&)\s?\d+/, '\1')
       @address.gsub!(/(\d+), \d+,? and \d+/i, '\1')
     end
 

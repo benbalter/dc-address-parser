@@ -91,6 +91,7 @@ describe DcAddressParser::Address do
     describe "ranges" do
       it "flattens dashed ranges" do
         test_normalizer :normalize_ranges,  "100-101",  "100"
+        test_normalizer :normalize_ranges,  "100‐101",  "100"
         test_normalizer :normalize_ranges,  "100 - 101",  "100"
         test_address "100-101 main street nw", "100 MAIN STREET NW"
       end
