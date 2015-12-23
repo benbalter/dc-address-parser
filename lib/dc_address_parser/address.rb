@@ -9,7 +9,7 @@ module DcAddressParser
     STREET_NAME_REGEX     = /([A-Z0-9' ]+)/
     STREET_TYPE_REGEX     = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.keys)})\b/
     STREET_TYPE_ABV_REGEX = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.values)})\b/
-    DIRECTION_REGEX       = /\A(#{Regexp.union DcAddressParser::DIRECTIONS.values})(?=#{STREET_NAME_REGEX}+\z)/
+    DIRECTION_REGEX       = /\A(#{Regexp.union DcAddressParser::DIRECTIONS.values})(?=\s#{STREET_NAME_REGEX}+\z)/
     QUADRANT_REGEX        = /([NS][EW])/
 
     PARTS = [:number, :number_suffix, :street_name, :street_type, :quadrant, :unit_number]
@@ -115,6 +115,7 @@ module DcAddressParser
       normalize_space
       normalize_mlk
       normalize_mt
+      normalize_eye_street
       split
       strip_punctuation
     end
@@ -159,6 +160,10 @@ module DcAddressParser
 
     def normalize_mt
       @address.gsub!(/\bMT\b/, "MOUNT")
+    end
+
+    def normalize_eye_street
+      @address.gsub!("EYE STREET", "I STREET")
     end
 
     def split

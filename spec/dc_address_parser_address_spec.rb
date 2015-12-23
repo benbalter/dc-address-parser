@@ -174,6 +174,11 @@ describe DcAddressParser::Address do
       test_normalizer :strip_punctuation, "123 N. BEN's ALLEY N.W.",  "123 N BEN's ALLEY NW"
       test_address "123 N. BEN's ALLEY N.W.", "123 NORTH BEN'S ALLEY NW"
     end
+
+    it "normalizes eye street" do
+      test_normalizer :normalize_eye_street, "123 EYE STREET SE",  "123 I STREET SE"
+      test_address "123 Eye Street SE", "123 I STREET SE"
+    end
   end
 
   describe "match" do
