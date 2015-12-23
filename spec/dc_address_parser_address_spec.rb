@@ -200,4 +200,15 @@ describe DcAddressParser::Address do
     expect(subject.lookup.class).to eql(DcAddressLookup::Location)
     expect(stub).to have_been_requested
   end
+
+  it "accepts a hash" do
+    hash = {
+      street_name: "Main",
+      number: "123",
+      street_type: "st",
+      quadrant: "n.w."
+    }
+    address = DcAddressParser::Address.new(hash)
+    expect(address.to_s).to eql("123 MAIN STREET NW")
+  end
 end

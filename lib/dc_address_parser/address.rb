@@ -11,10 +11,15 @@ module DcAddressParser
     STREET_TYPE_ABV_REGEX = /\b(#{Regexp.union(DcAddressParser::STREET_TYPES.values)})\b/
     QUADRANT_REGEX        = /([NS][EW])/
 
+    PARTS = [:number, :number_suffix, :street_name, :street_type, :quadrant, :unit_number]
     REQUIRED_PARTS = [:number, :street_name, :street_type, :quadrant]
 
-    def initialize(raw_address)
-      @raw_address = @address = raw_address
+    def initialize(address_or_hash)
+      if address_or_hash.class == Hash
+        address_or_hash = PARTS.clone.map { |part| address_or_hash[part] }.join(" ")
+      end
+      @raw_address = @address = address_or_hash
+
       normalize!
       REQUIRED_PARTS.each do |part|
         raise InvalidAddress, "#{part.to_s.sub("_", " ")} is missing" if send(part).nil?
@@ -34,7 +39,7 @@ module DcAddressParser
       @street_name ||= begin
         street_name = match(
         /#{number}(-?#{unit_number}|\s#{Regexp.escape number_suffix.to_s})?
-        \s#{STREET_NAME_REGEX}\s#{STREET_TYPE_REGEX}/x, 2)
+        \s#{STREET_NAME_REGEX}\s(?=#{STREET_TYPE_REGEX})/x, 2)
 
         if street_name =~ /\A[0-9]+\z/
           street_name = ActiveSupport::Inflector.ordinalize(street_name).upcase
@@ -46,7 +51,7 @@ module DcAddressParser
     alias_method :street, :street_name
 
     def street_type
-      @street_type ||= match STREET_TYPE_REGEX
+      @street_type ||= match(STREET_TYPE_REGEX) || "STREET"
     end
 
     def quadrant
@@ -69,15 +74,9 @@ module DcAddressParser
     alias_method :unit, :unit_number
 
     def to_h
-      {
-        number: number,
-        number_suffix: number_suffix,
-        street_name: street_name,
-        street_type: street_type,
-        quadrant: quadrant,
-        unit_number: unit_number,
-        city: DcAddressParser::CITY
-      }
+      hash = {}
+      PARTS.each { |part| hash[part] = send(part) }
+      hash.merge({city: DcAddressParser::CITY})
     end
 
     def to_s(include_city=false)
