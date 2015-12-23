@@ -93,6 +93,10 @@ module DcAddressParser
       DcAddressLookup.lookup to_s
     end
 
+    def inspect
+      "#<DcAddressParser::Address address=\"#{to_s}\">"
+    end
+
     private
 
     def normalize!
