@@ -112,6 +112,7 @@ module DcAddressParser
       normalize_rear
       normalize_space
       normalize_mlk
+      normalize_penn
       normalize_mt
       normalize_eye_street
       split
@@ -154,6 +155,10 @@ module DcAddressParser
     def normalize_mlk
       @address.gsub!(/\bM\.?L\.? KING\b/, "MARTIN LUTHER KING")
       @address.gsub!(/\bJR\./, "JR")
+    end
+
+    def normalize_penn
+      @address.gsub!(/\bPENN\b/, "PENNSYLVANIA")
     end
 
     def normalize_mt

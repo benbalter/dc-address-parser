@@ -185,6 +185,11 @@ describe DcAddressParser::Address do
       test_normalizer :normalize_eye_street, "123 EYE STREET SE",  "123 I STREET SE"
       test_address "123 Eye Street SE", "123 I STREET SE"
     end
+
+    it "normalizes penn" do
+      test_normalizer :normalize_penn, "123 PENN AVE NW",  "123 PENNSYLVANIA AVE NW"
+      test_address "123 PENN AVE NW", "123 PENNSYLVANIA AVENUE NW"
+    end
   end
 
   describe "match" do
