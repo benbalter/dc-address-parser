@@ -137,6 +137,11 @@ describe DcAddressParser::Address do
         test_normalizer :split, "FOO NW, BAR",  "FOO NW"
         test_address "123 main street NW, foo", "123 MAIN STREET NW"
       end
+
+      it "splits after new lines" do
+        test_normalizer :split, "FOO NW\n BAR",  "FOO NW"
+        test_address "123 main street NW\n foo", "123 MAIN STREET NW"
+      end
     end
 
     it "normalizes rear of-type addresses" do

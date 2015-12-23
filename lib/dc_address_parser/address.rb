@@ -169,6 +169,7 @@ module DcAddressParser
     def split
       @address = @address.split(";").reject { |s| s.empty? }.first.to_s
       @address = @address.split(/\bAND\b/).first.to_s.strip
+      @address = @address.split("\n").first.to_s.strip
       @address = @address.split(/\b([NS][EW]),/)[0..1].join
     end
 
