@@ -242,4 +242,9 @@ describe DcAddressParser::Address do
   it "removes double street types" do
     test_address "123 CADY'S ALLEY AL NW", "123 CADY'S ALLEY NW"
   end
+
+  it "properly errs out on invalid addresses" do
+    error = DcAddressParser::Address::InvalidAddress
+    expect { DcAddressParser::Address.new "foo" }.to raise_error(error)
+  end
 end

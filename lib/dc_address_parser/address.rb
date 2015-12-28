@@ -41,6 +41,7 @@ module DcAddressParser
         street_name = match(
         /#{number}(-?#{unit_number}|\s#{Regexp.escape number_suffix.to_s})?
         \s#{STREET_NAME_REGEX}\s(?=#{STREET_TYPE_REGEX})/x, 2)
+        return unless street_name
 
         if street_name =~ /\A[0-9]+\z/
           street_name = ActiveSupport::Inflector.ordinalize(street_name).upcase
